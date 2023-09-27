@@ -1,0 +1,15 @@
+version: '3.7'
+
+services:
+  db:
+    env_file:
+      - .env
+    image: "postgres:13"
+    ports:
+      - ${POSTGRES_PORT:-5432}:5432
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-root}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      POSTGRES_DB: ${POSTGRES_NAME:-db}
+    volumes:
+      - './postgres:/var/lib/postgresql/data/'

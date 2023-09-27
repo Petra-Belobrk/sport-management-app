@@ -1,0 +1,97 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum RoleType {
+  USER
+  ADMIN
+}
+
+enum AgeGroup {
+  CHILDREN
+  YOUTH
+  YOUNG_ADULTS
+  ADULTS
+}
+
+enum Days {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
+model Role {
+  id    String   @id @default(uuid())
+  name  String?
+  type  RoleType @unique
+  users User[]
+}
+
+model User {
+  id                String             @id @default(uuid())
+  role              Role               @relation(fields: [roleId], references: [id])
+  roleId            String
+  email             String             @unique
+  emailVerified     Boolean            @default(false)
+  password          String
+  firstName         String?
+  lastName          String?
+  classesSlots      Schedule[]
+  age               Int?
+  emailVerification EmailVerification?
+}
+
+model Class {
+  id          String     @id @default(uuid())
+  name        String
+  description String?
+  duration    Int?
+  age         AgeGroup
+  sport       Sport      @relation(fields: [sportId], references: [id])
+  sportId     String
+  reviews     Review[]
+  schedules   Schedule[]
+  avgRating   Int?       @default(0)
+}
+
+model Sport {
+  id    String  @id @default(uuid())
+  name  String
+  Class Class[]
+}
+
+model Review {
+  id      String  @id @default(uuid())
+  class   Class   @relation(fields: [classId], references: [id])
+  classId String
+  rating  Int
+  comment String?
+}
+
+model EmailVerification {
+  token      String   @id
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String   @unique
+  validUntil DateTime @default(dbgenerated("(timezone('utc'::text, now()) + '2 days'::interval)")) @db.Timestamp(6)
+}
+
+model Schedule {
+  id      String @id @default(uuid())
+  day     Days
+  slot    String
+  class   Class  @relation(fields: [classId], references: [id], onDelete: Cascade)
+  classId String
+  users   User[]
+}
