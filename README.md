@@ -46,7 +46,7 @@ $ docker compose build
 $ docker compose up
 
 # Run the migrations:
-$ npx prisma migrate:dev
+$ npx prisma migrate reset
 
 # development
 $ npm run start
