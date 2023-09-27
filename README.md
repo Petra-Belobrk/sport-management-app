@@ -24,7 +24,9 @@
 
 ## Description
 
-This is a nest.js application that manages a sport center
+This is a nest.js application that manages a sport center. 
+This application uses MailJet to send emails. If you haven't already,
+register and start using: https://www.mailjet.com/
 
 ## Installation
 
